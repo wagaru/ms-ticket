@@ -1,1 +1,14 @@
-version: 
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    command: '--config.file=/tmp/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus/:/tmp/prometheus/"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
