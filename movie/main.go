@@ -10,8 +10,12 @@ import (
 
 	"github.com/go-kit/log"
 
+	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
+	stdprometheus "github.com/prometheus/client_golang/prometheus"
+
 	"github.com/wagaru/ticket/movie/endpoint"
 	"github.com/wagaru/ticket/movie/logging"
+	"github.com/wagaru/ticket/movie/repository"
 	"github.com/wagaru/ticket/movie/service"
 	"github.com/wagaru/ticket/movie/transport"
 )
@@ -29,29 +33,25 @@ func main() {
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	// fieldKeys := []string{"method", "error"}
-	// requestCount := kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "movie",
-	// 	Name:      "request_count",
-	// 	Help:      "Number of requests received.",
-	// }, fieldKeys)
-	// requestLatency := kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "movie",
-	// 	Name:      "request_latency_microseconds",
-	// 	Help:      "Total duration of requests in microseconds.",
-	// }, fieldKeys)
-	// countResult := kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "movie",
-	// 	Name:      "count_result",
-	// 	Help:      "The result of each count method.",
-	// }, []string{})
+	requestCount := kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
+		Namespace: "ticket_system", // space is not allowed
+		Subsystem: "movie",
+		Name:      "request_count",
+		Help:      "Number of request received",
+	}, []string{"method"})
 
-	svc := service.NewInMemService()
+	requestLatency := kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+		Namespace: "ticket_system",
+		Subsystem: "movie",
+		Name:      "request_latency_microseconds",
+		Help:      "Total duration of requests in microseconds",
+	}, []string{"method"})
+
+	repo := repository.NewInMemRepository()
+
+	svc := service.NewService(repo)
 	svc = logging.LoggingMiddleware(logger)(svc)
-	// svc = logging.NewInstrumentationMiddleware(requestCount, requestLatency, countResult, svc)
+	svc = logging.InstrumentationMiddleware(requestCount, requestLatency)(svc)
 
 	endpoints := endpoint.MakeEndpoints(svc)
 
@@ -59,6 +59,7 @@ func main() {
 
 	errChan := make(chan error)
 	go func() {
+		logger.Log("msg", "start server", "tcp", "http", "listen", *addr)
 		errChan <- http.ListenAndServe(*addr, r)
 	}()
 

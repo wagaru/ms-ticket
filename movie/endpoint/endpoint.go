@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
+	"github.com/wagaru/ticket/movie/domain"
 	"github.com/wagaru/ticket/movie/service"
 )
 
@@ -15,7 +16,7 @@ type Endpoints struct {
 }
 
 type PostMovieRequest struct {
-	Movie service.Movie
+	Movie domain.Movie
 }
 
 type PostMovieResponse struct {
@@ -31,7 +32,7 @@ type GetMovieRequest struct {
 }
 
 type GetMovieResponse struct {
-	Movie service.Movie
+	Movie *domain.Movie
 	Err   error `json:"err,omitempty"`
 }
 
@@ -43,7 +44,7 @@ type GetMoviesRequest struct {
 }
 
 type GetMoviesResponse struct {
-	Movies []service.Movie `json:"movies,omitempty"`
+	Movies []*domain.Movie `json:"movies,omitempty"`
 	Err    error           `json:"error,omitempty"`
 }
 
@@ -62,7 +63,7 @@ func MakeEndpoints(svc service.Service) Endpoints {
 func makePostMovieEndpoint(svc service.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(PostMovieRequest)
-		err := svc.PostMovie(ctx, req.Movie)
+		err := svc.PostMovie(ctx, &req.Movie)
 		return PostMovieResponse{Err: err}, nil
 	}
 }

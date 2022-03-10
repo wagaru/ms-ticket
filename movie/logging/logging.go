@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
+	"github.com/wagaru/ticket/movie/domain"
 	"github.com/wagaru/ticket/movie/service"
 )
 
@@ -24,7 +25,7 @@ func LoggingMiddleware(logger log.Logger) Middleware {
 	}
 }
 
-func (lm *loggingMiddleware) PostMovie(ctx context.Context, movie service.Movie) (err error) {
+func (lm *loggingMiddleware) PostMovie(ctx context.Context, movie *domain.Movie) (err error) {
 	defer func(begin time.Time) {
 		lm.logger.Log(
 			"method", "PostMovie",
@@ -36,7 +37,7 @@ func (lm *loggingMiddleware) PostMovie(ctx context.Context, movie service.Movie)
 	return lm.next.PostMovie(ctx, movie)
 }
 
-func (lm *loggingMiddleware) GetMovies(ctx context.Context) (movies []service.Movie, err error) {
+func (lm *loggingMiddleware) GetMovies(ctx context.Context) (movies []*domain.Movie, err error) {
 	defer func(begin time.Time) {
 		lm.logger.Log(
 			"method", "GetMovies",
@@ -47,7 +48,7 @@ func (lm *loggingMiddleware) GetMovies(ctx context.Context) (movies []service.Mo
 	return lm.next.GetMovies(ctx)
 }
 
-func (lm *loggingMiddleware) GetMovie(ctx context.Context, ID string) (movie service.Movie, err error) {
+func (lm *loggingMiddleware) GetMovie(ctx context.Context, ID string) (movie *domain.Movie, err error) {
 	defer func(begin time.Time) {
 		lm.logger.Log(
 			"method", "GetMovie",

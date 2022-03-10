@@ -10,8 +10,9 @@ import (
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/go-kit/log"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/wagaru/ticket/movie/domain"
 	"github.com/wagaru/ticket/movie/endpoint"
-	"github.com/wagaru/ticket/movie/service"
 )
 
 var ErrBadRouting = errors.New("invalid routing")
@@ -43,6 +44,8 @@ func MakeHttpHandler(endpts endpoint.Endpoints, logger log.Logger) http.Handler 
 		encodeResponse,
 		options...,
 	))
+
+	r.Path("/metrics").Handler(promhttp.Handler())
 
 	return r
 }
@@ -93,9 +96,9 @@ func codeFrom(err error) int {
 	switch err {
 	case ErrBadRouting:
 		fallthrough
-	case service.ErrAlreadyExists:
+	case domain.ErrAlreadyExists:
 		fallthrough
-	case service.ErrNotFound:
+	case domain.ErrNotFound:
 		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError
