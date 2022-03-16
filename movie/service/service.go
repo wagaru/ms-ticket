@@ -7,8 +7,13 @@ import (
 )
 
 type Service interface {
+	// add new movie
 	PostMovie(ctx context.Context, m *domain.Movie) error
+
+	// get movie with movieID
 	GetMovie(ctx context.Context, ID string) (*domain.Movie, error)
+
+	// get all movies
 	GetMovies(ctx context.Context) ([]*domain.Movie, error)
 }
 

@@ -1,6 +1,10 @@
 package main
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/wagaru/ticket/pkg/common_error"
+)
 
 type Repository interface {
 	Store(*Cinema) error
@@ -24,7 +28,7 @@ func (in *inMemRepository) Store(cinema *Cinema) error {
 	in.mux.Lock()
 	defer in.mux.Unlock()
 	if _, ok := in.data[cinema.ID]; ok {
-		return ErrAlreadyExists
+		return common_error.ErrAlreadyExists
 	}
 	in.data[cinema.ID] = cinema
 	return nil
@@ -35,7 +39,7 @@ func (in *inMemRepository) Fetch(ID string) (*Cinema, error) {
 	defer in.mux.RUnlock()
 	cinema, ok := in.data[ID]
 	if !ok {
-		return nil, ErrNotFound
+		return nil, common_error.ErrNotFound
 	}
 	return cinema, nil
 }

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-kit/log"
+	"github.com/wagaru/ticket/pkg/common_error"
 
 	"github.com/go-kit/kit/transport"
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -64,7 +65,7 @@ func decodeGetCinemaRequest(ctx context.Context, r *http.Request) (interface{}, 
 	vars := mux.Vars(r)
 	id, ok := vars["id"]
 	if !ok {
-		return nil, ErrBadRouting
+		return nil, common_error.ErrBadRouting
 	}
 	return GetCinemaRequest{id}, nil
 }
@@ -102,9 +103,11 @@ func encodeError(ctx context.Context, err error, w http.ResponseWriter) {
 
 func getCodeFrom(err error) int {
 	switch err {
-	case ErrAlreadyExists:
+	case common_error.ErrAlreadyExists:
 		fallthrough
-	case ErrNotFound:
+	case common_error.ErrNotFound:
+		fallthrough
+	case common_error.ErrBadRouting:
 		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError

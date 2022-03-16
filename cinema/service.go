@@ -1,9 +1,16 @@
 package main
 
 type Service interface {
+	// add new cinema
 	PostCinema(cinema *Cinema) error
+
+	// get cinemas by city
 	GetCinemasByCity(city City) ([]*Cinema, error)
+
+	// get all cinemas
 	GetCinemas() ([]*Cinema, error)
+
+	// get single cinema by cinemaID
 	GetCinema(ID string) (*Cinema, error)
 }
 
