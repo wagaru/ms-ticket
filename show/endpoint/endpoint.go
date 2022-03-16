@@ -9,8 +9,34 @@ import (
 	"github.com/wagaru/ticket/show/service"
 )
 
+type Endpoints struct {
+	AddMovieEndpoint        endpoint.Endpoint
+	GetCinemaMoviesEndpoint endpoint.Endpoint
+	AddCinemaEndpoint       endpoint.Endpoint
+	GetCinemasEndpoint      endpoint.Endpoint
+	AddShowEndpoint         endpoint.Endpoint
+	GetShowsEndpoint        endpoint.Endpoint
+	GetShowSeatsEndpoint    endpoint.Endpoint
+}
+
+func MakeEndpoints(svc service.Service) Endpoints {
+	return Endpoints{
+		AddMovieEndpoint:        MakeAddMovieEndpoint(svc),
+		GetCinemaMoviesEndpoint: MakeGetCinemaMoviesEndpoint(svc),
+		AddCinemaEndpoint:       MakeAddCinemaEndpoint(svc),
+		GetCinemasEndpoint:      MakeGetCinemasEndpoint(svc),
+		AddShowEndpoint:         MakeAddShowEndpoint(svc),
+		GetShowsEndpoint:        MakeGetShowsEndpoint(svc),
+		GetShowSeatsEndpoint:    MakeGetShowSeatsEndpoint(svc),
+	}
+}
+
 type Error struct {
 	Err error `json:"error,omitempty"`
+}
+
+func (e *Error) GetError() error {
+	return e.Err
 }
 
 type AddMovieRequest struct {
@@ -54,12 +80,12 @@ type AddShowResponse struct {
 	Error
 }
 
-type GetShowRequest struct {
+type GetShowsRequest struct {
 	MovieID  uint `json:"movie_id"`
 	CinemaID uint `json:"cinema_id"`
 }
 
-type GetShowResponse struct {
+type GetShowsResponse struct {
 	Shows []*domain.Show `json:"shows"`
 	Error
 }
@@ -121,14 +147,14 @@ func MakeAddShowEndpoint(svc service.Service) endpoint.Endpoint {
 	}
 }
 
-func MakeGetShowEndpoint(svc service.Service) endpoint.Endpoint {
+func MakeGetShowsEndpoint(svc service.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req, ok := request.(GetShowRequest)
+		req, ok := request.(GetShowsRequest)
 		if !ok {
-			return GetShowResponse{Error: Error{common_error.ErrInvalidInput}}, nil
+			return GetShowsResponse{Error: Error{common_error.ErrInvalidInput}}, nil
 		}
-		shows, err := svc.GetShow(req.MovieID, req.CinemaID)
-		return GetShowResponse{shows, Error{err}}, nil
+		shows, err := svc.GetShows(req.MovieID, req.CinemaID)
+		return GetShowsResponse{shows, Error{err}}, nil
 	}
 }
 

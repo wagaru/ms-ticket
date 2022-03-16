@@ -23,7 +23,7 @@ type Service interface {
 	AddShow(show *domain.Show) error
 
 	// get all shows playing movie with movieID and in cinema cinemaID
-	GetShow(movieID uint, cinemaID uint) ([]*domain.Show, error)
+	GetShows(movieID uint, cinemaID uint) ([]*domain.Show, error)
 
 	// get show seats
 	GetShowSeats(showID uint) ([]*domain.CinemaSeat, error)
@@ -34,7 +34,7 @@ type service struct {
 	//routing RoutingService
 }
 
-func NewService(repo repository.Repository, routing RoutingService) Service {
+func NewService(repo repository.Repository) Service {
 	return &service{
 		repo: repo,
 		//routing: routing,
@@ -61,7 +61,7 @@ func (s *service) AddShow(show *domain.Show) error {
 	return s.repo.StoreShow(show)
 }
 
-func (s *service) GetShow(movieID uint, cinemaID uint) ([]*domain.Show, error) {
+func (s *service) GetShows(movieID uint, cinemaID uint) ([]*domain.Show, error) {
 	return s.repo.FetchShows(movieID, cinemaID)
 }
 

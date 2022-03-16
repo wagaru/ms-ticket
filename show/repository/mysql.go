@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/wagaru/ticket/show/domain"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,11 @@ type mysqlDB struct {
 	db *gorm.DB
 }
 
-func NewMySQLRepo(db *gorm.DB) Repository {
+func NewMySQLRepo(dsn string) Repository {
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 	return &mysqlDB{
 		db: db,
 	}

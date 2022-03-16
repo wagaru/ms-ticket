@@ -8,12 +8,13 @@ import (
 
 	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/wagaru/ticket/show/domain"
 
 	kithttp "github.com/go-kit/kit/transport/http"
 )
 
 type RoutingService interface {
-	GetCinemaHallSeats(cinemaID string) ([]*CinemaSeat, error)
+	GetCinemaHallSeats(cinemaID string) ([]*domain.CinemaSeat, error)
 }
 
 type proxyService struct {
@@ -22,7 +23,7 @@ type proxyService struct {
 	svc           RoutingService
 }
 
-func (p *proxyService) GetCinemaHallSeats(cinemaID string) ([]*CinemaSeat, error) {
+func (p *proxyService) GetCinemaHallSeats(cinemaID string) ([]*domain.CinemaSeat, error) {
 	resp, err := p.fetchEndpoint(p.ctx, fetchRequest{})
 	if err != nil {
 		return nil, err
@@ -59,8 +60,8 @@ type fetchRequest struct {
 }
 
 type fetchResponse struct {
-	Seats []*CinemaSeat `json:"seats"`
-	Err   error         `json:"error"`
+	Seats []*domain.CinemaSeat `json:"seats"`
+	Err   error                `json:"error"`
 }
 
 func encodeRequest(_ context.Context, r *http.Request, request interface{}) error {
