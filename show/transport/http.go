@@ -109,7 +109,7 @@ func decodeGetCinemaMoviesRequest(ctx context.Context, r *http.Request) (interfa
 
 func decodeAddShowRequest(ctx context.Context, r *http.Request) (interface{}, error) {
 	var request endpoint.AddShowRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&request.Show); err != nil {
 		return nil, common_error.ErrInvalidInput
 	}
 	return request, nil

@@ -64,7 +64,7 @@ func (m *mysqlDB) FetchAllCinemas() (cinemas []*domain.Cinema, err error) {
 }
 
 func (m *mysqlDB) StoreShow(show *domain.Show) error {
-	res := m.db.Create(show)
+	res := m.db.Create(&show)
 	if err := res.Error; err != nil {
 		return fmt.Errorf("StoreShow failed, %w", err)
 	}

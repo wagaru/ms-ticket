@@ -9,7 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - "./mysql:/docker-entrypoint-initdb.d"
+      - "./mysql/init:/docker-entrypoint-initdb.d"
+      - ./mysql/data:/var/lib/mysql
   adminer:
     image: adminer
     restart: always
