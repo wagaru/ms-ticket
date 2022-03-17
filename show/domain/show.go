@@ -44,8 +44,8 @@ type CinemaSeat struct {
 
 type Show struct {
 	gorm.Model
-	MovieID      string    `json:"movie_id"`
-	CinemaHallID string    `json:"cinema_hall_id"`
+	MovieID      uint      `json:"movie_id"`
+	CinemaHallID uint      `json:"cinema_hall_id"`
 	Date         time.Time `json:"date"`
 	StartTime    time.Time `json:"start_time"`
 	EndTime      time.Time `json:"end_time"`

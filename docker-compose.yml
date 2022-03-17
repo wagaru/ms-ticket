@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  mysql:
+    image: mysql:5.7.36
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - "./mysql:/docker-entrypoint-initdb.d"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
   prometheus:
     image: prom/prometheus
     command: '--config.file=/tmp/prometheus/prometheus.yml'

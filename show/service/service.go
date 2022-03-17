@@ -5,6 +5,8 @@ import (
 	"github.com/wagaru/ticket/show/repository"
 )
 
+type ServiceMiddleware func(Service) Service
+
 type Service interface {
 
 	// add new movie

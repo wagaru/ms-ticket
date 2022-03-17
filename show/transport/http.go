@@ -104,7 +104,7 @@ func decodeGetCinemaMoviesRequest(ctx context.Context, r *http.Request) (interfa
 	if err != nil {
 		return nil, err
 	}
-	return &endpoint.GetCinemaMoviesRequest{CinemaID: uint(ID)}, nil
+	return endpoint.GetCinemaMoviesRequest{CinemaID: uint(ID)}, nil
 }
 
 func decodeAddShowRequest(ctx context.Context, r *http.Request) (interface{}, error) {
