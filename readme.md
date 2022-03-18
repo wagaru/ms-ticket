@@ -1,6 +1,4 @@
-# Movie ticket selling system likes TicketMaster
-
-## Architecture
+# Movie ticket selling system
 
 It was a microservice composed by four different services:
 - Show - providing movie/cinmea/show CRUD service
