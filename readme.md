@@ -1,5 +1,5 @@
 # Movie ticket selling system likes TicketMaster
----
+
 ## Architecture
 
 It was a microservice composed by four different services:
